@@ -3,5 +3,9 @@ from django.core.paginator import Paginator
 from qa.models import Answer, Question 
 def test(requests, *args, **kwargs):
     posts = Question.objects.new()
+    limit = 10
+    page = requests.GET.get("page", 1)
+    paginator = Paginator(posts, limit)
+    page = paginator.page(page)
     return HttpResponse("OK")
 
