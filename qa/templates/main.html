@@ -1,5 +1,6 @@
 <html>
 	<body>
+		Hello
 		<nav><ul class="pagination">
 			{% for p in paginator.page_range %}
 			 {% if p == page %}
@@ -8,7 +9,7 @@
 			 <li>
 			 {% endif %}
 			  <a href="{{ paginator.baseurl }}{{ p }}">
-			  {{ p }}</a>
+			  {{ question.title }}</a>
 			</li>
 			{% endfor %}
 			</ul></nav>
