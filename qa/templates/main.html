@@ -1,8 +1,16 @@
 <html>
 	<body>
-		{% for i in paginator.page_range %}
-			<a href='/question/{{i}}/'>i</a>
-		{% endfor %}
+		<nav><ul class="pagination">
+			{% for p in paginator.page_range %}
+			 {% if p == page %}
+			 <li class="active">
+			 {% else %}
+			 <li>
+			 {% endif %}
+			  <a href="{{ paginator.baseurl }}{{ p }}">
+			  {{ p }}</a>
+			</li>
+			{% endfor %}
+			</ul></nav>
 	</body>
-
 </html>
