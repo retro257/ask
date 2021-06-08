@@ -1,7 +1,6 @@
 <html>
-	<body>
-		question last		
-		{% for p in question %}
+	<body>		
+		{% for p in questions %}
 			<a href="{{p.id}}">{{ p.title }}</a>
 		{% endfor %}
 	</body>

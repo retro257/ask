@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.core.paginator import Paginator
-from qa.models import Answer, Question
+from qa.models import Answer, Question, QuestionManager
 from django.shortcuts import render 
 def test(requests, *args, **kwargs):
     posts = Question.objects.order_by('-id')
@@ -8,6 +8,11 @@ def test(requests, *args, **kwargs):
     page = requests.GET.get("page", 1)
     paginator = Paginator(posts, limit)
     paginator.baseurl = '/?page='
-    page = paginator.page(1)
-    print(paginator.count)
+    page = paginator.page(page)
     return render(requests, 'main.html', {'questions': page.object_list,'paginator': paginator, 'page': page,})
+def qu(requests, it):
+    questi = Question.objects.get(id=it)
+    answers = Question.objects.obj(it)
+    for i in answers:
+        print(i.text)
+    return render(requests, 'quest.html', {'question':questi, 'answers':answers})
