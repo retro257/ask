@@ -12,9 +12,14 @@ def test(requests, *args, **kwargs):
     return render(requests, 'main.html', {'questions': page.object_list,'paginator': paginator, 'page': page,})
 def qu(requests, it):
     questi = Question.objects.get(id=it)
-    print(it)
-    answers = Answer.objects.filter(question_id=questi.id)
-    for i in answers:
+    res = []
+    answers = Answer.objects.all()
+    for p in answers:
+        if len(res) == 0:
+            res.append(p)
+        if len(res) >= 10:
+            break
+    for i in res:
         print(i.text)
         print(i.author)
-    return render(requests, 'quest.html', {'question':questi, 'answers':answers})
+    return render(requests, 'quest.html', {'question':questi, 'a':res})
