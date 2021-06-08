@@ -7,10 +7,10 @@ class QuestionManager(models.Manager):
     def popular(self):
         return self.order_by('-rating')
     def obj(id):
-        try:
-            question = Question.objects.get(id=id) 
-        finally:
-            return HttpResponseNotFound  
+#        try:
+        question = Question.objects.get(id=id) 
+#        finally:
+#            return HttpResponseNotFound  
         answers = Answer.objects.filter(question=question)
         res = []
         limit = 10
