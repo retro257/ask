@@ -1,8 +1,8 @@
 <html>
 	<body>
-		question last
-		{% for p in paginator.page_range %}
-			<a href="/question/{{ p.number }}">{{ p.ti }}{{p.number}}</a>
+		question last		
+		{% for p in question %}
+			<a href="{{p.id}}">{{ p.title }}</a>
 		{% endfor %}
 	</body>
 </html>

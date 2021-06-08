@@ -9,5 +9,5 @@ def test(requests, *args, **kwargs):
     paginator = Paginator(posts, limit)
     paginator.baseurl = '/?page='
     page = paginator.page(1)
-    print(paginator.count)
+    print(page.object_list)
     return render(requests, 'main.html', {'questions': page.object_list,'paginator': paginator, 'page': page,})
