@@ -11,19 +11,8 @@ def test(requests, *args, **kwargs):
     paginator.baseurl = '/?page='
     page = paginator.page(page)
     return render(requests, 'main.html', {'questions': page.object_list,'paginator': paginator, 'page': page,})
-def qu(requests, it):
-    questi = Question.objects.get(id=it)
-    res = []
-    answers = Answer.objects.all()
-    for p in answers:
-        if len(res) == 0:
-            res.append(p)
-        if len(res) >= 10:
-            break
-    for i in res:
-        print(i.text)
-        print(i.author)
-    return render(requests, 'quest.html', {'question':questi, 'a':res})
+def qu(requests, qa_id):
+    return HttpResponse('200')
 def formdef(requests):
     if requests.method == "GET":
         form = AskForm()
@@ -31,6 +20,7 @@ def formdef(requests):
         form = AskForm(requests.POST)
         if AskForm.clean(form):
             post = form.save()
-            url = post.id
-            return HttpResponseRedirect("/question/"+str(url))
+            url = Question.objects.get(author_id = 1)
+            print(url.id)
+            return HttpResponseRedirect("/question/"+str(url.id)+"/")
     return render(requests, "forms.html", {"forms":form}) 

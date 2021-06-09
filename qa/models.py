@@ -15,8 +15,6 @@ class Question(models.Model):
     rating = models.IntegerField(default=0)
     author = models.ForeignKey(User, default=1, null=True, on_delete=models.DO_NOTHING)
     likes = models.ManyToManyField(User, related_name='questions', blank=True)
-    def get_absolute_url(self):
-        return reverse('single-question-view', kwargs={'qa_id': self.id})
     def __unicode__(self):
         return self.title 
 class Answer(models.Model):

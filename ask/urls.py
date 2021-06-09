@@ -20,7 +20,7 @@ urlpatterns = [
     url(r'^$', test),
     url(r'^login/', test),
     url(r'^signup/', test),
-    url(r'^question/(?P<it>\d+)', qu, name="single-question-view"), 
+    url(r'^question/(?P<qa_id>\d+)', qu), 
     url(r'^ask/', formdef),
     url(r'^popular/', test),
     url(r'^new/', test),         
