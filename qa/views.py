@@ -1,7 +1,8 @@
-from django.http import HttpResponse 
+from django.http import HttpResponse, HttpResponseRedirect 
 from django.core.paginator import Paginator 
 from qa.models import Answer, Question, QuestionManager 
-from django.shortcuts import render 
+from django.shortcuts import render
+from qa.forms import AskForm, AnswerForm 
 def test(requests, *args, **kwargs):
     posts = Question.objects.order_by('-id')
     limit = requests.GET.get('limit', 10)
@@ -23,3 +24,15 @@ def qu(requests, it):
         print(i.text)
         print(i.author)
     return render(requests, 'quest.html', {'question':questi, 'a':res})
+def formdef(requests):
+    if requests.method == "GET":
+        form = AnswerForm()
+    else:
+        form = AnswerForm(requests.POST)
+        print(AnswerForm.clean(form))
+        if AnswerForm.clean(form) == False:
+            post = form.save()
+            url = post.get_url()
+            print(url)
+            return HttpResponseRedirect(url)
+    return render(requests, "forms.html", {"forms":form}) 

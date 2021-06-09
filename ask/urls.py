@@ -15,13 +15,13 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from qa.views import test, qu
+from qa.views import test, qu, formdef
 urlpatterns = [
     url(r'^$', test),
     url(r'^login/', test),
     url(r'^signup/', test),
     url(r'^question/(?P<it>\d+)', qu), 
-    url(r'^ask/', test),
+    url(r'^ask/', formdef),
     url(r'^popular/', test),
     url(r'^new/', test),         
 ]

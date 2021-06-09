@@ -1,0 +1,10 @@
+<html>
+  <body>
+    <form>
+      {% csrf_token %}
+      {% for i in forms %}
+        {{ i }}
+      {% endfor %}
+    </form>
+  </body>
+</html>
