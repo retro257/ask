@@ -26,13 +26,11 @@ def qu(requests, it):
     return render(requests, 'quest.html', {'question':questi, 'a':res})
 def formdef(requests):
     if requests.method == "GET":
-        form = AnswerForm()
+        form = AskForm()
     else:
-        form = AnswerForm(requests.POST)
-        print(AnswerForm.clean(form))
-        if AnswerForm.clean(form) == False:
+        form = AskForm(requests.POST)
+        if AskForm.clean(form):
             post = form.save()
-            url = post.get_url()
-            print(url)
-            return HttpResponseRedirect(url)
+            url = post.id
+            return HttpResponseRedirect("/question/"+str(url))
     return render(requests, "forms.html", {"forms":form}) 
