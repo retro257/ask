@@ -1,5 +1,8 @@
 <html>
 	<body>
+		<form>
+                	{% csrf_token %}
+		</form>
 		{{question.title}}		
 		{% for i in a %}
 			{{i.text}}

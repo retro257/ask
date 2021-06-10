@@ -12,7 +12,16 @@ def test(requests, *args, **kwargs):
     page = paginator.page(page)
     return render(requests, 'main.html', {'questions': page.object_list,'paginator': paginator, 'page': page,})
 def qu(requests, qa_id):
-    return HttpResponse('200')
+    question = Question.objects.get(id=qa_id)
+    answers = Answer.objects.filter(question=question)
+    if requests.method == "GET":
+        form = AnswerForm()
+    else:
+        form = AnswerForm(requests.POST)
+        post = Answer(form.cleaned_data)
+        post.save()
+        return HttpResponseRedirect("/question/"+str(qa_id)+"/")
+    return render(requests, "quest.html", {"question":question, "a":answers})
 def formdef(requests):
     if requests.method == "GET":
         form = AskForm()
