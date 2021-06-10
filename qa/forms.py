@@ -22,6 +22,13 @@ class AnswerForm(forms.Form):
     text = forms.CharField() 
     question = forms.ChoiceField() 
     def save(self):
-        post = Answer(**self.cleaned_data)
+        post = Answer(self.cleaned_data)
         post.save()
         return post
+class Login(forms.Form):
+    username = forms.CharField()
+    email = forms.EmailField()
+    password = forms.CharField()    
+    def save(self, ok):
+        post = self.cleaned_data[ok]
+        return post 

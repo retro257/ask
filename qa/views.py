@@ -2,7 +2,10 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core.paginator import Paginator 
 from qa.models import Answer, Question, QuestionManager 
 from django.shortcuts import render
-from qa.forms import AskForm, AnswerForm 
+from qa.forms import AskForm, AnswerForm, Login
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
+import django.contrib.sessions  
 def test(requests, *args, **kwargs):
     posts = Question.objects.order_by('-id')
     limit = requests.GET.get('limit', 10)
@@ -33,3 +36,14 @@ def formdef(requests):
             print(url.id)
             return HttpResponseRedirect("/question/"+str(url.id)+"/")
     return render(requests, "forms.html", {"forms":form}) 
+def signup(requests):
+    if requests.method == "GET":
+        form = Login()
+    else:
+        form = Login(requests.POST)
+        user = User.objects.create_user(username=form.save('username'), email=form.save('email'), password=form.save('password'))
+        user.save()
+        return HttpResponseRedirect("/")
+    return render(requests, "signup.html", {"form":form})
+def login(requests):
+    return HttpResponse("200 OK")
