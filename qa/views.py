@@ -21,7 +21,7 @@ def qu(requests, qa_id):
         post = Answer(form.cleaned_data)
         post.save()
         return HttpResponseRedirect("/question/"+str(qa_id)+"/")
-    return render(requests, "quest.html", {"question":question, "a":answers})
+    return render(requests, "quest.html", {"question":question, "a":answers, "form":form})
 def formdef(requests):
     if requests.method == "GET":
         form = AskForm()

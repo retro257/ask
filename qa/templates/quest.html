@@ -2,6 +2,9 @@
 	<body>
 		<form>
                 	{% csrf_token %}
+			{% for p in form %}
+				{{ p }}
+			{% endfor %}
 		</form>
 		{{question.title}}		
 		{% for i in a %}
