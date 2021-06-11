@@ -18,6 +18,8 @@ class AskForm(forms.Form):
             return True
         else:
             return False
+    def add_author(author):
+        quest = Question.objects.get()
 class AnswerForm(forms.Form): 
     text = forms.CharField() 
     question = forms.ChoiceField() 

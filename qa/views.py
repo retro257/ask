@@ -25,6 +25,9 @@ def qu(requests, qa_id):
         form = AnswerForm(requests.POST)
         post = Answer(form.cleaned_data)
         post.save()
+        ans = Answer.objects.get(question=qa_id)
+        ans.author = requests.user
+        ans.save()
         return HttpResponseRedirect("/question/"+str(qa_id)+"/")
     return render(requests, "quest.html", {"question":question, "a":answers, "form":form})
 def formdef(requests):
@@ -35,6 +38,7 @@ def formdef(requests):
         if AskForm.clean(form):
             post = form.save()
             url = Question.objects.get(author_id = 1)
+            print(requests.COOKIE)
             print(url.id)
             return HttpResponseRedirect("/question/"+str(url.id)+"/")
     return render(requests, "forms.html", {"forms":form}) 
@@ -45,9 +49,11 @@ def signup(requests):
         form = Login(requests.POST)
         if form.is_valid():
             user = User.objects.create_user(username=form.cleaned_data['username'], email=form.cleaned_data['email'], password=form.cleaned_data['password'])
+            user.password = form.cleaned_data['password']
             user.save()
             username = requests.POST['username']
             password = requests.POST['password'] 
+            print(password) 
             user = authenticate(username=username, password=password) 
             if user is not None:
                 login(requests,user)
@@ -62,14 +68,17 @@ def view_login(requests):
         if form.is_valid():
             try:
                 user = User.objects.get(username=form.cleaned_data['username'])
-                test_user = User.objects.create_user(username="test", password=form.cleaned_data['password'])
-                test_user.save()                                             
+                test_user = User.objects.create_user(username="test_user1", password=form.cleaned_data['password'])
+                test_user.save()
+                print(form.cleaned_data['password'])                                 
                 print(user.password)
                 print(test_user.password)   
-                if user.password == test_user.password:
+                if user.password == form.cleaned_data['password']:
                     requests.session['sessionid'] = get_random_string(32) 
+                    test_user.delete()
                     return HttpResponseRedirect("/")
                 else:
+                    test_user.delete() 
                     return HttpResponse("your password/login not found")
             except User.DoesNotExist:
                 return HttpResponse("your password/login not found")
