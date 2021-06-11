@@ -6,7 +6,8 @@ from qa.forms import AskForm, AnswerForm, Login, log
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.utils.crypto import get_random_string
-import django.contrib.sessions  
+import django.contrib.sessions
+import django.contrib.auth.hashers  
 def test(requests, *args, **kwargs):
     posts = Question.objects.order_by('-id')
     limit = requests.GET.get('limit', 10)
@@ -43,7 +44,6 @@ def signup(requests):
     else:
         form = Login(requests.POST)
         if form.is_valid():
-            print(form.cleaned_data['username'])
             user = User.objects.create_user(username=form.cleaned_data['username'], email=form.cleaned_data['email'], password=form.cleaned_data['password'])
             user.save()
             username = requests.POST['username']
@@ -60,11 +60,17 @@ def view_login(requests):
     else:
         form = log(requests.POST)
         if form.is_valid():
-            print(form.cleaned_data)
             try:
-                user = User.objects.get(username=form.cleaned_data['username'], password=salt_and_hash(form.cleaned_data['password']))
-                requests.session['sessionid'] = get_random_string(32) 
-                return HttpResponseRedirect("/")
+                user = User.objects.get(username=form.cleaned_data['username'])
+                test_user = User.objects.create_user(username="test", password=form.cleaned_data['password'])
+                test_user.save()                                             
+                print(user.password)
+                print(test_user.password)   
+                if user.password == test_user.password:
+                    requests.session['sessionid'] = get_random_string(32) 
+                    return HttpResponseRedirect("/")
+                else:
+                    return HttpResponse("your password/login not found")
             except User.DoesNotExist:
                 return HttpResponse("your password/login not found")
     return render(requests, "login.html", {"form":form}) 
