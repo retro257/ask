@@ -38,8 +38,9 @@ def formdef(requests):
         if AskForm.clean(form):
             post = form.save()
             url = Question.objects.get(author_id = 1)
-            print(requests.COOKIE)
-            print(url.id)
+            user = User.objects.get(password=requests.session['password'])
+            url.author = user
+            url.save() 
             return HttpResponseRedirect("/question/"+str(url.id)+"/")
     return render(requests, "forms.html", {"forms":form}) 
 def signup(requests): 
@@ -53,7 +54,6 @@ def signup(requests):
             user.save()
             username = requests.POST['username']
             password = requests.POST['password'] 
-            print(password) 
             user = authenticate(username=username, password=password) 
             if user is not None:
                 login(requests,user)
@@ -68,17 +68,11 @@ def view_login(requests):
         if form.is_valid():
             try:
                 user = User.objects.get(username=form.cleaned_data['username'])
-                test_user = User.objects.create_user(username="test_user1", password=form.cleaned_data['password'])
-                test_user.save()
-                print(form.cleaned_data['password'])                                 
-                print(user.password)
-                print(test_user.password)   
                 if user.password == form.cleaned_data['password']:
-                    requests.session['sessionid'] = get_random_string(32) 
-                    test_user.delete()
+                    requests.session['sessionid'] = get_random_string(32)
+                    requests.session['password'] = user.password   
                     return HttpResponseRedirect("/")
                 else:
-                    test_user.delete() 
                     return HttpResponse("your password/login not found")
             except User.DoesNotExist:
                 return HttpResponse("your password/login not found")
