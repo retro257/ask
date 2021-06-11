@@ -32,3 +32,6 @@ class Login(forms.Form):
     def save(self, ok):
         post = self.cleaned_data[ok]
         return post 
+class log(forms.Form):
+    username = forms.CharField()
+    password = forms.CharField()

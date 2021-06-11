@@ -43,20 +43,28 @@ def signup(requests):
     else:
         form = Login(requests.POST)
         if form.is_valid():
-            user = User.objects.create_user(username=form.save('username'), email=form.save('email'), password=form.save('password'))
+            print(form.cleaned_data['username'])
+            user = User.objects.create_user(username=form.cleaned_data['username'], email=form.cleaned_data['email'], password=form.cleaned_data['password'])
             user.save()
             username = requests.POST['username']
             password = requests.POST['password'] 
             user = authenticate(username=username, password=password) 
             if user is not None:
-                login(user)
+                login(requests,user)
             requests.session['sessionid'] = get_random_string(32)
             return HttpResponseRedirect("/") 
     return render(requests, "signup.html", {"form":form}) 
-def login(requests):
+def view_login(requests):
     if requests.method == "GET":
         form = log()
     else:
-        form = log()
-    return render(requests, "signup.html", {"form":form})
-        
+        form = log(requests.POST)
+        if form.is_valid():
+            print(form.cleaned_data)
+            try:
+                user = User.objects.get(username=form.cleaned_data['username'], password=salt_and_hash(form.cleaned_data['password']))
+                requests.session['sessionid'] = get_random_string(32) 
+                return HttpResponseRedirect("/")
+            except User.DoesNotExist:
+                return HttpResponse("your password/login not found")
+    return render(requests, "login.html", {"form":form}) 
