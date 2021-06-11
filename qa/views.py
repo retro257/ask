@@ -2,9 +2,10 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core.paginator import Paginator 
 from qa.models import Answer, Question, QuestionManager 
 from django.shortcuts import render
-from qa.forms import AskForm, AnswerForm, Login
+from qa.forms import AskForm, AnswerForm, Login, log
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
+from django.utils.crypto import get_random_string
 import django.contrib.sessions  
 def test(requests, *args, **kwargs):
     posts = Question.objects.order_by('-id')
@@ -36,14 +37,26 @@ def formdef(requests):
             print(url.id)
             return HttpResponseRedirect("/question/"+str(url.id)+"/")
     return render(requests, "forms.html", {"forms":form}) 
-def signup(requests):
+def signup(requests): 
     if requests.method == "GET":
         form = Login()
     else:
         form = Login(requests.POST)
-        user = User.objects.create_user(username=form.save('username'), email=form.save('email'), password=form.save('password'))
-        user.save()
-        return HttpResponseRedirect("/")
-    return render(requests, "signup.html", {"form":form})
+        if form.is_valid():
+            user = User.objects.create_user(username=form.save('username'), email=form.save('email'), password=form.save('password'))
+            user.save()
+            username = requests.POST['username']
+            password = requests.POST['password'] 
+            user = authenticate(username=username, password=password) 
+            if user is not None:
+                login(user)
+            requests.session['sessionid'] = get_random_string(32)
+            return HttpResponseRedirect("/") 
+    return render(requests, "signup.html", {"form":form}) 
 def login(requests):
-    return HttpResponse("200 OK")
+    if requests.method == "GET":
+        form = log()
+    else:
+        form = log()
+    return render(requests, "signup.html", {"form":form})
+        
